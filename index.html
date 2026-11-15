@@ -14,7 +14,43 @@
 <main class="wrap"><section class="hero"><div class="hero-content"><h1>Hàng Úc chính hãng<br><span>Chọn lọc cho gia đình Việt</span></h1><p>Khám phá các sản phẩm được tuyển chọn từ Úc.</p><ul><li>Vitamin &amp; thực phẩm chức năng</li><li>Mỹ phẩm &amp; chăm sóc cá nhân</li><li>Thực phẩm, đồ dùng thiết yếu</li></ul><button class="orangebtn" id="shopNow" type="button">Mua sắm ngay ›</button></div><div class="hero-label">🇦🇺 AUS MARKET · Australian Selection</div></section>
 <section class="benefits" aria-label="Cam kết dịch vụ"><div class="benefit"><span class="ico">🏅</span><span><b>Sản phẩm chọn lọc</b><small>Thông tin rõ ràng</small></span></div><div class="benefit"><span class="ico">🚚</span><span><b>Giao hàng về Việt Nam</b><small>Xác nhận phí vận chuyển</small></span></div><div class="benefit"><span class="ico">🎧</span><span><b>Hỗ trợ đặt hàng</b><small>Tư vấn trước khi mua</small></span></div><div class="benefit"><span class="ico">🛡️</span><span><b>Đặt hàng linh hoạt</b><small>Gửi yêu cầu, nhận báo giá</small></span></div></section>
 <section id="catalog"><div class="sectionhead"><h2>🔥 Sản phẩm nổi bật</h2><a href="#catalog" id="showAll">Xem tất cả ›</a></div><div class="filters"><select id="category" aria-label="Lọc danh mục"><option value="">Tất cả danh mục</option></select><span class="muted" id="resultCount"></span></div><div class="status" id="status">Đang tải sản phẩm...</div><div class="grid" id="products"></div></section></main>
-<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Giỏ hàng"><section class="panel"><div class="panel-head"><h2>Giỏ hàng của bạn</h2><button class="close" id="close" aria-label="Đóng giỏ hàng">✕</button></div><div id="cartItems"></div><h3 id="total">Tổng tham khảo: A$0.00</h3><button class="checkout" id="copyOrder">📋 Sao chép nội dung đơn hàng</button><p class="muted">Đây là yêu cầu đặt hàng, chưa phải thanh toán trực tuyến. Vui lòng gửi nội dung đơn hàng cho AUS MARKET để xác nhận giá và phí vận chuyển.</p></section></div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Giỏ hàng"><section class="panel"><div class="panel-head"><h2>Giỏ hàng của bạn</h2><button class="close" id="close" aria-label="Đóng giỏ hàng">✕</button></div><div id="cartItems"></div><h3 id="total">Tổng tham khảo: A$0.00</h3><div id="orderForm" style="margin-top:20px">
+  <h3>Thông tin đặt hàng</h3>
+
+  <form id="customerOrderForm">
+    <input
+      id="customerName"
+      type="text"
+      placeholder="Họ và tên *"
+      required
+    >
+
+    <input
+      id="customerPhone"
+      type="tel"
+      placeholder="Số điện thoại *"
+      required
+    >
+
+    <input
+      id="customerAddress"
+      type="text"
+      placeholder="Địa chỉ nhận hàng *"
+      required
+    >
+
+    <textarea
+      id="customerNote"
+      placeholder="Ghi chú đơn hàng (không bắt buộc)"
+    ></textarea>
+
+    <button type="submit" class="checkout">
+      Xác nhận đặt hàng
+    </button>
+  </form>
+
+  <p id="orderMessage"></p>
+</div>📋 Sao chép nội dung đơn hàng</button><p class="muted">Đây là yêu cầu đặt hàng, chưa phải thanh toán trực tuyến. Vui lòng gửi nội dung đơn hàng cho AUS MARKET để xác nhận giá và phí vận chuyển.</p></section></div>
 <footer>© AUS MARKET · Giá hiển thị bằng AUD và chỉ mang tính tham khảo. Hình ảnh sản phẩm lấy từ dữ liệu cửa hàng.</footer>
 <script>
 // Chỉ dùng publishable key (KHÔNG dùng secret key hoặc service_role).
