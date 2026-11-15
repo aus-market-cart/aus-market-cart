@@ -71,6 +71,68 @@ $('cartOpen').onclick=showCart;$('close').onclick=()=>$('drawer').classList.remo
 $('copyOrder').onclick=async()=>{const rows=cartRows();if(!rows.length){alert('Giỏ hàng đang trống');return}const content='YÊU CẦU ĐẶT HÀNG AUS MARKET\n'+rows.map(({p,qty})=>`${p.name} (${p.size||''}) × ${qty}: ${money(Number(p.price||0)*qty)}`).join('\n')+'\nTổng tham khảo: '+money(rows.reduce((s,{p,qty})=>s+Number(p.price||0)*qty,0))+'\nVui lòng xác nhận giá và vận chuyển.';try{await navigator.clipboard.writeText(content);alert('Đã sao chép. Hãy dán vào tin nhắn gửi AUS MARKET.')}catch{prompt('Sao chép đơn hàng:',content)}};
 $('search').oninput=render;$('searchForm').onsubmit=e=>{e.preventDefault();$('catalog').scrollIntoView({behavior:'smooth'})};$('category').onchange=render;$('shopNow').onclick=()=>$('catalog').scrollIntoView({behavior:'smooth'});$('showAll').onclick=()=>{$('search').value='';$('category').value='';render()};
 $('navCategories').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const cat=b.dataset.cat,match=b.dataset.match;if(cat!==undefined){$('category').value='';$('search').value=''}else if(match){const choices=[...$('category').options].slice(1);const found=choices.find(o=>o.value.toLocaleLowerCase('vi').includes(match));if(found){$('category').value=found.value;$('search').value=''}else{$('category').value='';$('search').value=match}}render();$('catalog').scrollIntoView({behavior:'smooth'})});
-save();async function load(){try{const url=SUPABASE_URL.replace(/\/$/,'')+'/rest/v1/products?select=id,name,price,size,image,category,is_active&is_active=eq.true&order=name.asc';const response=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});if(!response.ok)throw Error('HTTP '+response.status);products=await response.json();$('category').innerHTML='<option value="">Tất cả danh mục</option>'+[...new Set(products.map(p=>p.category).filter(Boolean))].sort().map(c=>`<option value="${safe(c)}">${safe(c)}</option>`).join('');save();render()}catch(err){$('status').hidden=false;$('status').textContent='Không tải được sản phẩm từ Supabase ('+err.message+'). Kiểm tra URL, publishable key và chính sách SELECT.'}}load();
+save();$('customerOrderForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = $('customerName').value.trim();
+  const phone = $('customerPhone').value.trim();
+  const address = $('customerAddress').value.trim();
+  const note = $('customerNote').value.trim();
+  const message = $('orderMessage');
+
+  const rows = cartRows();
+
+  if (!rows.length) {
+    message.textContent = 'Vui lòng thêm sản phẩm vào giỏ hàng.';
+    return;
+  }
+
+  const items = rows.map(({p, qty}) => ({
+    id: p.id,
+    quantity: qty
+  }));
+
+  message.textContent = 'Đang gửi đơn hàng...';
+
+  try {
+    const response = await fetch(
+      SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/place_order',
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          p_name: name,
+          p_phone: phone,
+          p_address: address,
+          p_note: note,
+          p_items: items
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('HTTP ' + response.status);
+    }
+
+    const orderId = await response.json();
+
+    message.textContent =
+      'Đặt hàng thành công! Mã đơn hàng: ' + orderId;
+
+    cart = {};
+    save();
+    $('customerOrderForm').reset();
+    showCart();
+
+  } catch (error) {
+    message.textContent =
+      'Không thể gửi đơn hàng. Vui lòng thử lại.';
+    console.error(error);
+  }
+});
+  async function load(){try{const url=SUPABASE_URL.replace(/\/$/,'')+'/rest/v1/products?select=id,name,price,size,image,category,is_active&is_active=eq.true&order=name.asc';const response=await fetch(url,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});if(!response.ok)throw Error('HTTP '+response.status);products=await response.json();$('category').innerHTML='<option value="">Tất cả danh mục</option>'+[...new Set(products.map(p=>p.category).filter(Boolean))].sort().map(c=>`<option value="${safe(c)}">${safe(c)}</option>`).join('');save();render()}catch(err){$('status').hidden=false;$('status').textContent='Không tải được sản phẩm từ Supabase ('+err.message+'). Kiểm tra URL, publishable key và chính sách SELECT.'}}load();
 </script>
 </body></html>
