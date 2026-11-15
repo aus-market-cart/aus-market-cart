@@ -92,7 +92,12 @@ save();$('customerOrderForm').addEventListener('submit', async (e) => {
     return;
   }
 
-  const items = rows.map(({p, qty}) => ({
+  
+const items = rows.map(({p, qty}) => ({
+  id: p.id,
+  qty: qty
+}));
+(({p, qty}) => ({
     id: p.id,
     quantity: qty
   }));
